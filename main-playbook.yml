@@ -9,15 +9,6 @@
     db_host: '192.168.3.215'
     db_user: 'user'
     db_name: 'db'
-  tasks:
-    - set_fact:
-        myvar: "{{ inventory_hostname }}"
-      delegate_to: "{{ item }}"
-      with_items: "{{ play_hosts }}"
-      run_once: yes
-    # Ensure that myvar is a name of the first host
-    - debug:
-        msg: "{{ myvar }}"
     
   vars_files:
     - vars/main.yml
