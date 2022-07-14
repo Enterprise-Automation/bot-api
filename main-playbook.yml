@@ -1,0 +1,32 @@
+---
+- hosts: all
+  become: true
+  gather_facts: no
+  vars:
+    node_apps_location: /usr/local/app
+    git_repo: https://github.com/EAS-Clark/DiscordBot-Images.git
+    db_password: 'example'
+    db_host: '192.168.3.215'
+    db_user: 'user'
+    db_name: 'db'
+  tasks:
+    - set_fact:
+        myvar: "{{ inventory_hostname }}"
+      delegate_to: "{{ item }}"
+      with_items: "{{ play_hosts }}"
+      run_once: yes
+    # Ensure that myvar is a name of the first host
+    - debug:
+        msg: "{{ myvar }}"
+    
+  vars_files:
+    - vars/main.yml
+  
+
+  roles:
+    - pymysql
+    - { role: geerlingguy.mysql, become: yes , when: '"mysql" in group_names'}
+    - { role: mysql_query, when: '"mysql" in group_names'}
+    - { role: nodeJs, when: '"vm" in group_names'}
+    - { role: appInstall, when: '"vm" in group_names'}
+
